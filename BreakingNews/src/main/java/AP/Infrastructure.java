@@ -5,6 +5,7 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.LocalDate;
 import java.util.ArrayList;
 
 public class Infrastructure {
@@ -12,13 +13,15 @@ public class Infrastructure {
     private final String URL;
     private final String APIKEY;
     private final String JSONRESULT;
-    private ArrayList<News> newsList; // TODO: Create the News class
-
+    private ArrayList<News> newsList;
 
     public Infrastructure(String APIKEY) {
         this.APIKEY = APIKEY;
-        this.URL = "https://newsapi.org/v2/everything?q=tesla&from=2025-02-05&sortBy=publishedAt&apiKey=";
+        this.URL = "https://newsapi.org/v2/everything?q=tesla&from=" + LocalDate.now().minusDays(1) + "&sortBy=publishedAt&apiKey=";
         this.JSONRESULT = getInformation();
+        this.newsList = new ArrayList<>();
+
+        parseInformation();
     }
 
     public ArrayList<News> getNewsList() {
@@ -46,15 +49,83 @@ public class Infrastructure {
     }
 
     private void parseInformation() {
-        // TODO: Get the first 20 news from the articles array of the json result
-        //  and parse the information of each on of them to be mapped to News class
-        //  finally add them to newsList in this class to display them in the output
+        if (JSONRESULT == null) {
+            System.out.println("No data to parse.");
+            return;
+        }
+
+        int startIndex = JSONRESULT.indexOf("\"articles\":[");
+        if (startIndex == -1) {
+            System.out.println("Invalid JSON format: 'articles' not found.");
+            return;
+        }
+
+        int endIndex = JSONRESULT.indexOf("}]", startIndex);
+        if (endIndex == -1) {
+            System.out.println("Invalid JSON format: End of 'articles' not found.");
+            return;
+        }
+
+        String articlesJson = JSONRESULT.substring(startIndex + 11, endIndex + 1);
+        String[] articles = articlesJson.split("\\},\\{");
+
+        for (int i = 0; i < Math.min(20, articles.length); i++) {
+            String article = articles[i];
+            if (i > 0) {
+                article = "{" + article;
+            }
+
+            String title = extractField(article, "title");
+            String description = extractField(article, "description");
+            String url = extractField(article, "url");
+            String sourceName = extractField(article, "name", "source");
+            String author = extractField(article, "author");
+            String publishedAt = extractField(article, "publishedAt");
+
+            if (title != null && description != null && url != null && sourceName != null && author != null && publishedAt != null) {
+                News news = new News(title, description, sourceName, author, url, publishedAt);
+                newsList.add(news);
+            }
+        }
+    }
+
+    private String extractField(String json, String fieldName) {
+        int startIndex = json.indexOf("\"" + fieldName + "\":");
+        if (startIndex == -1) {
+            return null;
+        }
+
+        startIndex = json.indexOf("\"", startIndex + fieldName.length() + 3) + 1;
+        int endIndex = json.indexOf("\"", startIndex);
+        return json.substring(startIndex, endIndex);
+    }
+
+    private String extractField(String json, String fieldName, String parentField) {
+        int startIndex = json.indexOf("\"" + parentField + "\":");
+        if (startIndex == -1) {
+            return null;
+        }
+
+        startIndex = json.indexOf("\"" + fieldName + "\":", startIndex);
+        if (startIndex == -1) {
+            return null;
+        }
+
+        startIndex = json.indexOf("\"", startIndex + fieldName.length() + 3) + 1;
+        int endIndex = json.indexOf("\"", startIndex);
+        return json.substring(startIndex, endIndex);
     }
 
     public void displayNewsList() {
-        // TODO: Display titles of the news you got from api
-        //  and print them in a way that user can choose one
-        //  to see the full information of the news
-    }
+        if (newsList == null || newsList.isEmpty()) {
+            System.out.println("No news to display.");
+            System.out.println("JSON Result: " + JSONRESULT);
+            return;
+        }
 
+        for (int i = 0; i < newsList.size(); i++) {
+//            System.out.println(newsList.size());
+            System.out.println((i + 1) + ". " + newsList.get(i).getTitle());
+        }
+    }
 }
