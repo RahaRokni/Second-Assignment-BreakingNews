@@ -1,50 +1,82 @@
-# Project Title
+# Project Title: News API Integration
 
-Simple overview of use/purpose.
+**Simple overview of use/purpose:** 
+This project integrates the News API to fetch and display the latest news articles related to Tesla. It provides a command-line interface for users to browse and read news articles.
 
 ## Description
 
-An in-depth paragraph about your project and overview of use.
+This project is a Java-based application that connects to the News API to retrieve news articles about Tesla. The application fetches the latest articles from the past day, parses the JSON response, and displays the articles in a user-friendly format. Users can select an article to view its details, including the title, author, description, source, URL, and publication date. The project demonstrates how to work with APIs, handle JSON data, and create a simple command-line interface in Java.
 
 ## Getting Started
 
 ### Dependencies
 
-* Describe any prerequisites, libraries, OS version, etc., needed before installing program.
-* ex. Windows 10
+- **Java Development Kit (JDK):** Version 11 or higher.
+- **Operating System:** Compatible with Windows, macOS, and Linux.
+- **Libraries:** 
+  - `java.net.http` for HTTP requests.
+  - No external libraries are required for JSON parsing (manual parsing is implemented).
 
 ### Installing
 
-* How/where to download your program
-* Any modifications needed to be made to files/folders
+1. **Download the Project:**
+   - Clone the repository or download the source code files (`Infrastructure.java`, `Main.java`, and `News.java`).
+   ```bash
+  git clone https://github.com/RahaRokni/Second-Assignment-BreakingNews.git
+  ```
+  - **Modify the API Key**:
+  Open the Main.java file and replace the APIKEY variable with your News API key.
+  ```bash
+  String APIKEY = "your_api_key_here";
+  ```
+  - **Compile the Program**:
+  Navigate to the project directory and compile the Java files.
+  ```bash
+  javac AP/*.java
+  ```
 
 ### Executing program
 
-* How to run the program
-* Step-by-step bullets
-```
-code blocks for commands
-```
+- **Run the Program**:
+Execute the Main class to start the application.
+    ```bash
+  java AP.Main
+ ```
+- **Run the Program**:
+
+* The program will display a list of news articles.
+
+* Enter the number corresponding to the article you want to read.
+
+*Enter 0 to exit the program.
 
 ## Help
 
-Any advise for common problems or issues.
-```
-command to run if program contains helper info
-```
+If you encounter issues while running the program:
+
+    * Ensure that your API key is valid and has access to the News API.
+
+    * Check your internet connection, as the program requires an active connection to fetch data.
+
+    * If the program crashes or behaves unexpectedly, verify that the JSON response from the API is in the expected format.
+
+    * For additional help, you can run the program with debug information:
+    ```bash
+  java AP.Main --debug
+ ```
 
 ## Authors
 
-Contributors names and contact info
+Contact: rharokni@gmail.com
 
-ex. Dominique Pizzie  
-ex. [@DomPizzie](https://twitter.com/dompizzie)
+GitHub: @RahaRokni
 
 ## Version History
 
 * 0.2
-    * Various bug fixes and optimizations
-    * See [commit change]() or See [release history]()
+    * Bug Fixes: Resolved issues with JSON parsing and improved error handling.
+
+    * Enhanced User Interface: Added more detailed article display and better menu navigation.
 * 0.1
     * Initial Release
 
